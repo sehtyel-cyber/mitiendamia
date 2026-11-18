@@ -1,0 +1,26 @@
+{
+  "name": "logix-fashion-ecommerce",
+  "version": "2.0.0",
+  "description": "Sistema de Gestión de Pedidos, Inventario y Logística para E-Commerce de Moda - Persistencia en Supabase",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "ecommerce",
+    "logistica",
+    "pedidos",
+    "peru",
+    "inventario",
+    "supabase",
+    "realtime"
+  ],
+  "author": "LOGIX Fashion",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^10.6.2",
+    "postcss": "^8.5.33",
+    "tailwindcss": "^3.4.19"
+  }
+}

@@ -35,100 +35,100 @@
     </div>
   </header>
   <div class="max-w-7xl mx-auto px-4 pt-24 pb-12">
-    <div class="admin-tabs mb-6">
-      <button class="admin-tab active" onclick="showTab('pedidos')">PEDIDOS</button>
-      <button class="admin-tab" onclick="showTab('inventario')">INVENTARIO</button>
-      <button class="admin-tab" onclick="showTab('ventas')">VENTAS</button>
-      <button class="admin-tab" onclick="showTab('mapa')">MAPA DE CLIENTES</button>
-    </div>
-    <div id="toolbarPedidos" class="admin-toolbar">
-      <div class="filter-pills">
-        <button class="filter-pill active" onclick="setFilter('todos', this)">TODOS</button>
-        <button class="filter-pill" onclick="setFilter('lima', this)">LIMA</button>
-        <button class="filter-pill" onclick="setFilter('provincia', this)">PROVINCIA</button>
-        <button class="filter-pill" onclick="setFilter('pendientes', this)">PENDIENTES</button>
-        <button class="filter-pill" onclick="setFilter('enviados', this)">ENVIADOS</button>
+    <div id="adminContent" class="fade-in">
+      <div class="admin-tabs mb-6">
+        <button class="admin-tab active" onclick="showTab('pedidos')">PEDIDOS</button>
+        <button class="admin-tab" onclick="showTab('inventario')">INVENTARIO</button>
+        <button class="admin-tab" onclick="showTab('ventas')">VENTAS</button>
+        <button class="admin-tab" onclick="showTab('mapa')">MAPA DE CLIENTES</button>
       </div>
-      <div class="flex gap-2">
-        <input type="text" id="orderSearch" placeholder="Buscar nombre, DNI, tel√©fono..." class="w-full sm:w-64 field-input">
-        <input type="date" id="dateFilter" class="field-input">
-      </div>
-      <div class="flex gap-2">
-        <button class="share-btn" onclick="copyStoreLink()"><i data-lucide="copy" class="w-3 h-3"></i><span>Copiar enlace</span></button>
-        <button class="share-btn" onclick="shareWhatsApp()"><i data-lucide="share-2" class="w-3 h-3"></i><span>WhatsApp</span></button>
-      </div>
-    </div>
-    <section id="view-pedidos" class="fade-in">
-      <div class="orders-grid" id="ordersGrid"></div>
-      <div id="ordersEmpty" class="hidden empty-state">
-        <i data-lucide="inbox" class="w-12 h-12"></i>
-        <p class="text-sm font-semibold uppercase tracking-wider">No hay pedidos</p>
-        <p class="text-xs text-slate-400 mt-1">Ajusta los filtros o confirma un pedido desde la tienda.</p>
-      </div>
-    <section id="view-inventario" class="hidden space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-bold tracking-tight">Control de Inventario</h3>
-        <button class="btn-primary-black" onclick="openInventoryModal()" style="padding:8px 14px; font-size:0.8125rem; width:auto;">Agregar prenda</button>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="inventory-table">
-          <thead>
-            <tr>
-              <th>Prenda</th><th>Color</th><th>Talla</th><th>Stock</th><th>Precio (S/)</th><th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="inventoryTableBody"></tbody>
-        </table>
-      </div>
-      <div id="inventoryEmpty" class="hidden empty-state">
-        <i data-lucide="package" class="w-12 h-12"></i>
-        <p class="text-sm font-semibold uppercase tracking-wider">Sin inventario</p>
-      </div>
-    </section>
-    <section id="view-ventas" class="hidden space-y-6">
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-label">Total vendido</div>
-          <div class="metric-value" id="metricTotal">S/ 0.00</div>
+      <div id="toolbarPedidos" class="admin-toolbar">
+        <div class="filter-pills">
+          <button class="filter-pill active" onclick="setFilter('todos', this)">TODOS</button>
+          <button class="filter-pill" onclick="setFilter('lima', this)">LIMA</button>
+          <button class="filter-pill" onclick="setFilter('provincia', this)">PROVINCIA</button>
+          <button class="filter-pill" onclick="setFilter('pendientes', this)">PENDIENTES</button>
+          <button class="filter-pill" onclick="setFilter('enviados', this)">ENVIADOS</button>
         </div>
-        <div class="metric-card">
-          <div class="metric-label">Pedidos del mes</div>
-          <div class="metric-value" id="metricPedidos">0</div>
+        <div class="flex gap-2">
+          <input type="text" id="orderSearch" placeholder="Buscar nombre, DNI, telÈfono..." class="w-full sm:w-64 field-input">
+          <input type="date" id="dateFilter" class="field-input">
         </div>
-        <div class="metric-card">
-          <div class="metric-label">Ticket promedio</div>
-          <div class="metric-value" id="metricTicket">S/ 0.00</div>
+        <div class="flex gap-2">
+          <button class="share-btn" onclick="copyStoreLink()"><i data-lucide="copy" class="w-3 h-3"></i><span>Copiar enlace</span></button>
+          <button class="share-btn" onclick="shareWhatsApp()"><i data-lucide="share-2" class="w-3 h-3"></i><span>WhatsApp</span></button>
         </div>
       </div>
-      <div class="card-premium p-4">
-        <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Historial de ventas confirmadas</h3>
+      <section id="view-pedidos" class="fade-in">
+        <div class="orders-grid" id="ordersGrid"></div>
+        <div id="ordersEmpty" class="hidden empty-state">
+          <i data-lucide="inbox" class="w-12 h-12"></i>
+          <p class="text-sm font-semibold uppercase tracking-wider">No hay pedidos</p>
+          <p class="text-xs text-slate-400 mt-1">Ajusta los filtros o confirma un pedido desde la tienda.</p>
+        </div>
+      </section>
+      <section id="view-inventario" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold tracking-tight">Control de Inventario</h3>
+          <button class="btn-primary-black" onclick="openInventoryModal()" style="padding:8px 14px; font-size:0.8125rem; width:auto;">Agregar prenda</button>
+        </div>
         <div class="overflow-x-auto">
           <table class="inventory-table">
             <thead>
-              <tr><th>Pedido</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Zona</th></tr>
+              <tr>
+                <th>Prenda</th><th>Color</th><th>Talla</th><th>Stock</th><th>Precio (S/)</th><th>Acciones</th>
+              </tr>
             </thead>
-            <tbody id="salesTableBody"></tbody>
+            <tbody id="inventoryTableBody"></tbody>
           </table>
         </div>
+        <div id="inventoryEmpty" class="hidden empty-state">
+          <i data-lucide="package" class="w-12 h-12"></i>
+          <p class="text-sm font-semibold uppercase tracking-wider">Sin inventario</p>
+        </div>
+      </section>
+      <section id="view-ventas" class="hidden space-y-6">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Total vendido</div>
+            <div class="metric-value" id="metricTotal">S/ 0.00</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Pedidos del mes</div>
+            <div class="metric-value" id="metricPedidos">0</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Ticket promedio</div>
+            <div class="metric-value" id="metricTicket">S/ 0.00</div>
+          </div>
+        </div>
+        <div class="card-premium p-4">
+          <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Historial de ventas confirmadas</h3>
+          <div class="overflow-x-auto">
+            <table class="inventory-table">
+              <thead>
+                <tr><th>Pedido</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Zona</th></tr>
+              </thead>
+              <tbody id="salesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <section id="view-mapa" class="hidden empty-state">
+        <i data-lucide="map-pin" class="w-12 h-12"></i>
+        <p class="text-sm font-semibold uppercase tracking-wider mt-4">Mapa de Clientes</p>
+        <p class="text-xs text-slate-400 mt-1">VisualizaciÛn por distritos y zonas prÛximamente.</p>
+      </section>
+    </div>
+    <div id="printModal" class="print-modal hidden">
+      <div class="print-preview">
+        <button class="close-print" onclick="closePrintModal()"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <h3 class="text-lg font-bold mb-2">??? RÛtulo de envÌo</h3>
+        <div class="thermal-label" id="thermalLabelContent"></div>
+        <button class="btn-print-thermal" onclick="window.print();">Imprimir rÛtulo</button>
       </div>
-    </section>
-    <section id="view-mapa" class="hidden empty-state">
-      <i data-lucide="map-pin" class="w-12 h-12"></i>
-      <p class="text-sm font-semibold uppercase tracking-wider mt-4">Mapa de Clientes</p>
-      <p class="text-xs text-slate-400 mt-1">Visualizaci√≥n por distritos y zonas pr√≥ximamente.</p>
-    </section>
-  </div>
-  <div id="printModal" class="print-modal hidden">
-    <div class="print-preview">
-      <button class="close-print" onclick="closePrintModal()">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-      <h3 class="text-lg font-bold mb-2">üñ®Ô∏è R√≥tulo de env√≠o</h3>
-      <div class="thermal-label" id="thermalLabelContent"></div>
-      <button class="btn-print-thermal" onclick="window.print();">Imprimir r√≥tulo</button>
     </div>
   </div>
   <script src="admin.js"></script>
 </body>
 </html>
-    </section>

@@ -1,11 +1,11 @@
-/* MITIENDAMIA - LÃ³gica admin */
+/* MITIENDAMIA - Lógica admin */
 let orders = [];
 let inventory = [];
 let currentFilter = 'todos';
 let demoOrders = [
   { id: 1, nombre: 'Carlos Mendoza', celular: '987654321', zona: 'lima', distrito: 'Miraflores', direccion: 'Av. Larco 123, dpto 405', referencia: 'Frente al parque', productos: [{producto:'Hoodie Street',color:'Negro',talla:'M'}], estado: 'pendiente', enviado: false, creado_en: new Date().toISOString() },
-  { id: 2, nombre: 'LucÃ­a FernÃ¡ndez', celular: '912345678', zona: 'provincia', provincia: 'Arequipa', agenciaShalom: 'Shalom Arequipa Centro', productos: [{producto:'Cargo Pant',color:'Verde Oliva',talla:'L'}], estado: 'pendiente', enviado: false, creado_en: new Date().toISOString() },
-  { id: 3, nombre: 'AndrÃ©s Rojas', celular: '998877665', zona: 'lima', distrito: 'San Isidro', direccion: 'Av. Paz SoldÃ¡n 456', referencia: '', productos: [{producto:'Tee Logo',color:'Blanco',talla:'S'},{producto:'Jacket Windbreaker',color:'Azul',talla:'L'}], estado: 'registrado', enviado: true, creado_en: new Date().toISOString() }
+  { id: 2, nombre: 'Lucía Fernández', celular: '912345678', zona: 'provincia', provincia: 'Arequipa', agenciaShalom: 'Shalom Arequipa Centro', productos: [{producto:'Cargo Pant',color:'Verde Oliva',talla:'L'}], estado: 'pendiente', enviado: false, creado_en: new Date().toISOString() },
+  { id: 3, nombre: 'Andrés Rojas', celular: '998877665', zona: 'lima', distrito: 'San Isidro', direccion: 'Av. Paz Soldán 456', referencia: '', productos: [{producto:'Tee Logo',color:'Blanco',talla:'S'},{producto:'Jacket Windbreaker',color:'Azul',talla:'L'}], estado: 'registrado', enviado: true, creado_en: new Date().toISOString() }
 ];
 let demoInventory = [
   { id: 1, prenda: 'Hoodie Street', color: 'Negro', talla: 'M', stock: 12, precio: 89 },
@@ -13,6 +13,36 @@ let demoInventory = [
   { id: 3, prenda: 'Cargo Pant', color: 'Verde Oliva', talla: 'S', stock: 0, precio: 129 },
   { id: 4, prenda: 'Tee Logo', color: 'Rojo', talla: 'M', stock: 25, precio: 49 },
 ];
+
+function checkAuth() {
+  const admin = sessionStorage.getItem('mta_admin');
+  if (admin === 'true') {
+    showAdminPanel();
+  } else {
+    showLoginScreen();
+  }
+}
+
+function showLoginScreen() {
+  const loginScreen = document.getElementById('loginScreen');
+  const adminPanel = document.getElementById('adminPanel');
+  if (loginScreen) loginScreen.classList.remove('hidden');
+  if (adminPanel) adminPanel.classList.add('hidden');
+}
+
+function showAdminPanel() {
+  const loginScreen = document.getElementById('loginScreen');
+  const adminPanel = document.getElementById('adminPanel');
+  const emailEl = document.getElementById('adminUserEmail');
+  if (loginScreen) loginScreen.classList.add('hidden');
+  if (adminPanel) adminPanel.classList.remove('hidden');
+  if (emailEl) {
+    emailEl.textContent = sessionStorage.getItem('mta_email') || 'Admin (Demo)';
+    emailEl.classList.remove('hidden');
+  }
+  initAdmin();
+}
+
 function initAdmin() {
   const supabase = window.getSupabase ? window.getSupabase() : null;
   if (!supabase) {
@@ -21,12 +51,13 @@ function initAdmin() {
     renderPedidos();
     renderInventario();
     renderVentas();
-    showToastAdmin('Modo demo activo. ConectÃ¡ Supabase para datos reales.', 'info');
+    showToastAdmin('Modo demo activo. Conectá Supabase para datos reales.', 'info');
   } else {
     cargarDesdeSupabase();
   }
   lucide.createIcons();
 }
+
 function cargarDesdeSupabase() {
   const supabase = window.getSupabase();
   supabase.from('pedidos').select('*').order('creado_en', { ascending: false }).then(({ data, error }) => {
@@ -39,6 +70,7 @@ function cargarDesdeSupabase() {
     renderInventario();
   });
 }
+
 function showTab(tab) {
   document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
@@ -50,12 +82,14 @@ function showTab(tab) {
   if (tab === 'inventario') renderInventario();
   if (tab === 'ventas') renderVentas();
 }
+
 function setFilter(filtro, btn) {
   currentFilter = filtro;
   document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   renderPedidos();
 }
+
 function renderPedidos() {
   const grid = document.getElementById('ordersGrid');
   const empty = document.getElementById('ordersEmpty');
@@ -90,8 +124,8 @@ function renderPedidos() {
         <p><i data-lucide="tag" class="w-3 h-3 inline mr-1"></i>${escapeHtml(itemsHtml)}</p>
         <div class="order-actions">
           <div class="row">
-            <button class="btn-rotulo" onclick="openPrintModal(${o.id})"><i data-lucide="printer" class="w-3 h-3"></i> RÃ“TULO</button>
-            <button class="btn-registrar ${registrado?'registrado':''}" onclick="toggleRegistrar(${o.id})">${registrado ? 'âœ“ REGISTRADO' : 'REGISTRAR'}</button>
+            <button class="btn-rotulo" onclick="openPrintModal(${o.id})"><i data-lucide="printer" class="w-3 h-3"></i> RÓTULO</button>
+            <button class="btn-registrar ${registrado?'registrado':''}" onclick="toggleRegistrar(${o.id})">${registrado ? '? REGISTRADO' : 'REGISTRAR'}</button>
           </div>
           <div class="switch-enviado" onclick="toggleEnviado(${o.id}, this)">
             <input type="checkbox" ${enviado?'checked':''} onchange="event.stopPropagation(); toggleEnviado(${o.id}, this)">
@@ -103,6 +137,7 @@ function renderPedidos() {
   });
   lucide.createIcons();
 }
+
 function toggleRegistrar(id) {
   const o = orders.find(x => x.id === id);
   if (!o) return;
@@ -110,6 +145,7 @@ function toggleRegistrar(id) {
   renderPedidos();
   showToastAdmin(o.estado === 'registrado' ? 'Pedido registrado y stock descontado' : 'Pedido vuelto a pendiente', o.estado === 'registrado' ? 'success' : 'info');
 }
+
 function toggleEnviado(id, el) {
   const o = orders.find(x => x.id === id);
   if (!o) return;
@@ -119,6 +155,7 @@ function toggleEnviado(id, el) {
   el.closest('.order-card').classList.toggle('sent', o.enviado);
   showToastAdmin(o.enviado ? 'Marcado como enviado' : 'Desmarcado enviado', 'info');
 }
+
 function openPrintModal(id) {
   const o = orders.find(x => x.id === id);
   if (!o) return;
@@ -144,6 +181,7 @@ function openPrintModal(id) {
   document.getElementById('printModal').classList.add('open');
   lucide.createIcons();
 }
+
 function closePrintModal() {
   const m = document.getElementById('printModal');
   if (m.classList.contains('open')) {
@@ -151,17 +189,19 @@ function closePrintModal() {
     setTimeout(() => m.classList.add('hidden'), 300);
   }
 }
+
 function invChange(id, delta) {
   const it = inventory.find(x => x.id === id);
   if (!it) return;
   it.stock = Math.max(0, it.stock + delta);
   renderInventario();
 }
+
 function openInventoryModal() {
   const nombre = prompt('Nombre de la prenda:');
   if (!nombre) return;
-  const color = prompt('Color:') || 'Ãšnico';
-  const talla = prompt('Talla:') || 'Ãšnica';
+  const color = prompt('Color:') || 'Único';
+  const talla = prompt('Talla:') || 'Única';
   const stock = parseInt(prompt('Stock inicial:') || '0', 10) || 0;
   const precio = parseFloat(prompt('Precio (S/):') || '0') || 0;
   const nuevo = { id: Date.now(), prenda: nombre, color, talla, stock, precio };
@@ -169,6 +209,7 @@ function openInventoryModal() {
   renderInventario();
   showToastAdmin('Prenda agregada al inventario', 'success');
 }
+
 function renderVentas() {
   const confirmadas = orders.filter(o => o.estado === 'registrado');
   const total = confirmadas.reduce((s, o) => s + 50, 0);
@@ -185,12 +226,13 @@ function renderVentas() {
       <td>${o.zona === 'lima' ? 'Lima' : 'Provincia'}</td>
     </tr>`).join('');
 }
+
 function copyStoreLink() {
   const link = 'https://mitiendamia.netlify.app';
   navigator.clipboard.writeText(link).then(() => {
     const btn = document.querySelector('button[onclick="copyStoreLink()"]');
     const original = btn.innerHTML;
-    btn.innerHTML = '<i data-lucide="check" class="w-3 h-3"></i><span>Â¡Enlace copiado!</span>';
+    btn.innerHTML = '<i data-lucide="check" class="w-3 h-3"></i><span>¡Enlace copiado!</span>';
     btn.classList.add('copied');
     lucide.createIcons();
     setTimeout(() => {
@@ -201,10 +243,12 @@ function copyStoreLink() {
     showToastAdmin('Enlace copiado al portapapeles', 'success');
   });
 }
+
 function shareWhatsApp() {
-  const text = encodeURIComponent('Â¡Hola! Conoce MITIENDAMIA. Realiza tus pedidos en lÃ­nea: https://mitiendamia.netlify.app');
+  const text = encodeURIComponent('¡Hola! Conoce MITIENDAMIA. Realiza tus pedidos en línea: https://mitiendamia.netlify.app');
   window.open('https://wa.me/?text=' + text, '_blank');
 }
+
 function showToastAdmin(msg, type = 'info') {
   const c = document.getElementById('toastContainer');
   const t = document.createElement('div');
@@ -213,8 +257,13 @@ function showToastAdmin(msg, type = 'info') {
   c.appendChild(t);
   setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100%)'; setTimeout(() => t.remove(), 300); }, 3500);
 }
+
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;').replace(/'/g, '&#039;');
 }
-document.addEventListener('DOMContentLoaded', initAdmin);
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+});
+
