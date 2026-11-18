@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MITIENDAMIA - Completa tu pedido</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { streetwear: { black: '#0F0F0F', gray: '#F5F5F7', border: '#E5E7EB' } },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          borderRadius: { card: '12px' }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-streetwear-gray text-streetwear-black font-sans antialiased min-h-screen">
+  <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+  <header class="app-header">
+    <div class="container">
+      <a href="/" class="brand-link">
+        <div class="w-8 h-8 bg-streetwear-black text-white rounded-md flex items-center justify-center font-black text-sm tracking-tighter">M</div>
+        <span class="brand-name">MITIENDAMIA</span>
+      </a>
+      <button id="btnOpenAdminAccess" class="btn-admin-access" onclick="openAdminLogin()">
+        <i data-lucide="lock" class="w-3 h-3"></i>
+        <span>Acceso Admin</span>
+      </button>
+    </div>
+  </header>
+  <div id="publicView" class="max-w-md mx-auto px-4 pt-24 pb-12">
+    <main class="space-y-6">
+      <div class="card-premium p-6">
+        <div class="text-center mb-6">
+        <form id="orderForm" class="space-y-4" onsubmit="handleOrderSubmit(event)">
+          <div id="fieldsLima" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="field-group">
+                <label class="field-label">Nombre completo</label>
+                <input type="text" id="nombre" required class="field-input" placeholder="Juan Pérez">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Celular (9 dígitos)</label>
+                <input type="tel" id="celular" required class="field-input" placeholder="999 999 999" maxlength="9" inputmode="numeric">
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Distrito</label>
+              <input type="text" id="distrito" required class="field-input" placeholder="Miraflores, San Borja...">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Dirección exacta</label>
+              <input type="text" id="direccion" required class="field-input" placeholder="Av. Larco 123, dpto 405">
+            </div>
+            <div class="field-group">
+              <label class="field-label">Referencia</label>
+              <input type="text" id="referencia" class="field-input" placeholder="Frente al parque...">
+            </div>
+          </div>
+          <div id="fieldsProvincia" class="hidden space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="field-group">
+                <label class="field-label">Nombre completo</label>
+                <input type="text" id="nombreProv" required class="field-input" placeholder="Juan Pérez">
+              </div>
+              <div class="field-group">
+                <label class="field-label">DNI</label>
+                <input type="text" id="dni" required class="field-input" placeholder="12345678" maxlength="8" inputmode="numeric">
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Celular</label>
+              <input type="tel" id="celularProv" required class="field-input" placeholder="999 999 999" inputmode="numeric">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="field-group">
+                <label class="field-label">Provincia / Ciudad</label>
+                <input type="text" id="provincia" required class="field-input" placeholder="Arequipa, Cusco...">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Agencia Shalom</label>
+                <input type="text" id="agenciaShalom" required class="field-input" placeholder="Shalom Arequipa...">
+              </div>
+            </div>
+          </div>
+          <div class="border-t border-streetwear-border pt-6">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Productos</h3>
+            <div id="productRows" class="space-y-3"></div>
+            <button type="button" class="btn-add-product" onclick="addProductRow()">
+              <i data-lucide="plus" class="w-3 h-3"></i>
+  <div id="confirmationCard" class="confirmation-overlay hidden">
+    <div class="confirmation-card fade-in">
+      <button class="close-confirm" onclick="closeConfirmation()">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div class="confirmation-icon"><i data-lucide="check-circle" class="w-8 h-8"></i></div>
+      <h3>PEDIDO CONFIRMADO</h3>
+      <p class="caption">Gracias por tu compra</p>
+      <div id="orderSummary" class="space-y-3 mb-6"></div>
+      <button class="btn-primary-black" onclick="closeConfirmation()">Volver al inicio</button>
+    </div>
+  </div>
+  <div id="adminLoginModal" class="login-modal-overlay hidden">
+    <div class="login-modal">
+      <button class="close-modal" onclick="closeAdminLogin()">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <h3>Acceso Admin</h3>
+      <p class="subtitle">Inicia sesión para gestionar pedidos</p>
+      <form id="adminLoginForm" class="space-y-4" onsubmit="handleAdminLogin(event)">
+        <div>
+          <label class="admin-form-label">Correo</label>
+          <input type="email" id="adminEmail" required class="admin-form-input" placeholder="admin@mitiendamia.com">
+        </div>
+        <div>
+          <label class="admin-form-label">Contraseña</label>
+          <input type="password" id="adminPassword" required class="admin-form-input" placeholder="admin123">
+        </div>
+        <button type="submit" class="btn-primary-black">Ingresar</button>
+      </form>
+      <p class="demo-hint">Modo demo: contraseña admin123</p>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+              <span>+ AGREGAR OTRO PRODUCTO</span>
+            </button>
+          </div>
+          <button type="submit" id="btnConfirmar" class="btn-primary-black mt-2">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>CONFIRMAR PEDIDO</span>
+          </button>
+        </form>
+      </div>
+    </main>
+  </div>
+          <span class="inline-block mb-2 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-streetwear-black bg-slate-100 rounded-full">Nuevo pedido</span>
+          <h2 class="text-2xl font-bold tracking-tight">COMPLETA TU PEDIDO</h2>
+          <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest">Rellena tus datos y confirma</p>
+        </div>
+        <div class="zone-tabs mb-6">
+          <button id="tabLima" class="zone-tab active" onclick="selectZone('lima')">
+            LIMA
+            <span class="tab-caption">Entrega 24-48h</span>
+          </button>
+          <button id="tabProvincia" class="zone-tab" onclick="selectZone('provincia')">
+            PROVINCIA
+            <span class="tab-caption">Shalom / Olva</span>
+          </button>
+        </div>
